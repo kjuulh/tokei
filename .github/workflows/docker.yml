@@ -35,13 +35,12 @@ jobs:
         id: docker_meta
         uses: marcelcoding/ghaction-docker-meta@v2
         with:
-          tag-edge: true
           images: |
             ${{ env.DOCKER_HUB_SLUG }}
           tag-semver: |
             {{version}}
             {{major}}.{{minor}}
-          flavor: alpine-${{ matrix.arch }}
+          flavor: ${{ matrix.arch }}
           main-flavor: alpine
       - name: Build and Push to Docker
         uses: docker/build-push-action@v3
