@@ -1,0 +1,24 @@
+FROM rust as builder
+
+RUN rustup target add aarch64-unknown-linux-musl
+
+WORKDIR /src
+
+COPY ci ci 
+COPY src src
+COPY tests tests
+COPY Cargo.toml Cargo.lock build.rs languages.json ./
+
+RUN cargo build -r --target=aarch64-unknown-linux-musl
+
+FROM alpine
+
+WORKDIR /usr/bin/
+
+COPY --from=builder /src/target/aarch64-unknown-linux-musl/release/tokei .
+
+RUN ls
+
+WORKDIR /mnt
+
+ENTRYPOINT tokei
